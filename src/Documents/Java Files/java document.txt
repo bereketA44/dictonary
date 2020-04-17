@@ -1,0 +1,93 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+public class dictGUI {
+    private  JFrame mainFrame = new JFrame();
+
+    dictGUI() {
+         mainFrame.getContentPane();
+         mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+         mainFrame.setSize(1000, 700);
+         mainFrame.setTitle("Dictionary Application");
+         mainFrame.setVisible(true);
+         menuBar();
+}
+
+    void menuBar (){
+        JMenuBar mb = new JMenuBar();
+
+        JMenu menu  = new JMenu("Dictionary Options");
+        JMenuItem menuItem = new JMenuItem("Add Word  ");
+        menuItem.setIcon( getImage("\\icons\\add.png"));
+        menuItem.setAccelerator( KeyStroke.getKeyStroke("F5"));
+        menu.add(menuItem);
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            //    Add word action listner heere;
+            }
+        });
+
+        /* ************************************** */
+
+        menuItem = new JMenuItem("Search Word  ");
+        menuItem.setIcon( getImage("\\icons\\search.gif"));
+        menuItem.setAccelerator( KeyStroke.getKeyStroke("F6"));
+        menu.add(menuItem);
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //    Add word action listner heere;
+            }
+        });
+
+        /* ************************************** */
+
+        menuItem = new JMenuItem("Delete Word  ");
+        menuItem.setIcon( getImage("\\icons\\Delete .png"));
+        menuItem.setAccelerator( KeyStroke.getKeyStroke("F7"));
+        menu.add(menuItem);
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                //    Add word action listner heere;
+            }
+        });
+
+        /* ************************************** */
+
+        menuItem = new JMenuItem("Exit Application  ");
+        menuItem.setIcon( getImage("\\icons\\exit.png"));
+        menuItem.setAccelerator( KeyStroke.getKeyStroke("F12"));
+        menu.add(menuItem);
+        menuItem.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.dispose();
+            }
+        });
+
+        
+        mb.add(menu);
+        mainFrame.setJMenuBar(mb);
+        mainFrame.setVisible(true);
+
+
+
+
+    }
+
+
+    public ImageIcon getImage(String filename){
+        try {
+            return new ImageIcon(
+                    this.getClass().getResource(filename));
+        }
+        catch(Exception ex) {
+            System.out.println( ex.getMessage());
+            return null;
+        }
+    }
+}

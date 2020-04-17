@@ -1,0 +1,601 @@
+<html>
+<head>
+<title>dictGUI.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+dictGUI.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">javax.swing.*</span><span class="s0">;</span>
+import <span class="s1">java.awt.*</span><span class="s0">;</span>
+import <span class="s1">java.awt.event.*</span><span class="s0">;</span>
+import <span class="s1">java.io.*</span><span class="s0">;</span>
+
+
+public class <span class="s1">dictGUI {</span>
+        <span class="s0">private </span><span class="s1">JFrame mainFrame = </span><span class="s0">new </span><span class="s1">JFrame()</span><span class="s0">;</span>
+        private <span class="s1">Dimension di = </span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">, </span><span class="s2">700</span><span class="s1">)</span><span class="s0">;</span>
+        private <span class="s1">JPanel searchpan = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        private <span class="s1">JPanel addpan = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+
+        <span class="s1">loader load</span><span class="s0">;</span>
+        <span class="s1">avl_Tree loaderAVL</span><span class="s0">;</span>
+        <span class="s1">StringBuilder wordList</span><span class="s0">;</span>
+
+    <span class="s1">dictGUI(avl_Tree loader</span><span class="s0">, </span><span class="s1">StringBuilder wordlist</span><span class="s0">, boolean </span><span class="s1">stat) {</span>
+        mainFrame.getContentPane()<span class="s0">;</span>
+        <span class="s1">mainFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setBackground(Color.white)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setLayout(</span><span class="s0">new </span><span class="s1">BorderLayout())</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setSize(di)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setTitle(</span><span class="s3">&quot;Dictionary Application&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuBar()</span><span class="s0">;</span>
+        <span class="s1">itemsGUI()</span><span class="s0">;</span>
+        <span class="s1">search_interface_GUI()</span><span class="s0">;</span>
+        <span class="s1">loaderAVL=loader</span><span class="s0">;</span>
+        this<span class="s1">.wordList=wordlist</span><span class="s0">;</span>
+        if <span class="s1">(!stat)</span>
+            add_word_interface_GUI()<span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">menuBar() {</span>
+        JMenuBar menuBar = <span class="s0">new </span><span class="s1">JMenuBar()</span><span class="s0">;</span>
+        <span class="s1">menuBar.setBackground(Color.GREEN)</span><span class="s0">;</span>
+        <span class="s1">JMenu menu1 = </span><span class="s0">new </span><span class="s1">JMenu(</span><span class="s3">&quot;Dictionary Options&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">JMenuItem menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Add Word  &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">add.png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F5&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menu1.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                addpan.removeAll()<span class="s0">;</span>
+                <span class="s1">mainFrame.setSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">700</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">add_word_interface_GUI()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+
+        <span class="s4">/* ************************************** */</span>
+
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Search Word  &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F6&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menu1.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                searchpan.removeAll()<span class="s0">;</span>
+                <span class="s1">mainFrame.setSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">700</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">search_interface_GUI()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+
+        <span class="s4">/* ************************************** */</span>
+
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;List Word  &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">list1.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F7&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menu1.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                String rows = String.valueOf(wordList)<span class="s0">;</span>
+                <span class="s1">JFrame listFrme</span><span class="s0">;</span>
+                <span class="s1">listFrme = </span><span class="s0">new </span><span class="s1">JFrame(</span><span class="s3">&quot;Word List&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.getContentPane()</span><span class="s0">;</span>
+                <span class="s1">listFrme.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">200</span><span class="s0">, </span><span class="s2">400</span><span class="s1">))</span><span class="s0">;</span>
+
+
+                <span class="s1">JTextArea wordstable = </span><span class="s0">new </span><span class="s1">JTextArea (</span><span class="s3">&quot; Words Available </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ rows)</span><span class="s0">;</span>
+                <span class="s1">JScrollPane sp = </span><span class="s0">new </span><span class="s1">JScrollPane(wordstable</span><span class="s0">, </span><span class="s1">JScrollPane.VERTICAL_SCROLLBAR_ALWAYS</span><span class="s0">, </span><span class="s1">JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+                <span class="s1">sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+
+                <span class="s1">listFrme.add(sp)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.pack()</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+
+        <span class="s4">/* ************************************** */</span>
+
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Exit Application  &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">exit.png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F12&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menu1.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">JMenuItem finalMenuItem1 = menuItem</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                JOptionPane pane = <span class="s0">new </span><span class="s1">JOptionPane()</span><span class="s0">;</span>
+                <span class="s1">Object[] o = {</span><span class="s3">&quot;yes&quot;</span><span class="s0">, </span><span class="s3">&quot; No&quot;</span><span class="s1">}</span><span class="s0">;</span>
+                int <span class="s1">check=pane.showOptionDialog(finalMenuItem1</span><span class="s0">,</span><span class="s3">&quot;Are You Sure You Want To Exit? &quot;</span><span class="s0">, </span><span class="s3">&quot;EXIT?&quot;</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, null,</span><span class="s1">o</span><span class="s0">, </span><span class="s1">o[</span><span class="s2">1</span><span class="s1">] )</span><span class="s0">;</span>
+                if <span class="s1">(check==</span><span class="s2">0</span><span class="s1">)</span>
+                    mainFrame.dispose()<span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+
+        <span class="s4">/* ************************************** */</span>
+
+
+        <span class="s1">JMenu menu2 = </span><span class="s0">new </span><span class="s1">JMenu(</span><span class="s3">&quot;Dictionary Documents&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Java Code Documentation &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">java.GIF&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F11&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menu2.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">JMenuItem finalMenuItem = menuItem</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                String directory = System.getProperty(<span class="s3">&quot;user.dir&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                try <span class="s1">{</span>
+                    File file = <span class="s0">new </span><span class="s1">File(directory + </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">Documents</span><span class="s0">\\</span><span class="s3">Java Files</span><span class="s0">\\</span><span class="s3">avl_Tree.java.html&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">Desktop.getDesktop().open(file)</span><span class="s0">;</span>
+                     <span class="s1">file = </span><span class="s0">new </span><span class="s1">File(directory + </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">Documents</span><span class="s0">\\</span><span class="s3">Java Files</span><span class="s0">\\</span><span class="s3">dictGUI.java.html&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">Desktop.getDesktop().open(file)</span><span class="s0">;</span>
+                     <span class="s1">file = </span><span class="s0">new </span><span class="s1">File(directory + </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">Documents</span><span class="s0">\\</span><span class="s3">Java Files</span><span class="s0">\\</span><span class="s3">fileHandler.java.html&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">Desktop.getDesktop().open(file)</span><span class="s0">;</span>
+                     <span class="s1">file = </span><span class="s0">new </span><span class="s1">File(directory + </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">Documents</span><span class="s0">\\</span><span class="s3">Java Files</span><span class="s0">\\</span><span class="s3">loader.java.html&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">Desktop.getDesktop().open(file)</span><span class="s0">;</span>
+                     <span class="s1">file = </span><span class="s0">new </span><span class="s1">File(directory + </span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">src</span><span class="s0">\\</span><span class="s3">Documents</span><span class="s0">\\</span><span class="s3">Java Files</span><span class="s0">\\</span><span class="s3">nodeLink.java.html&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">Desktop.getDesktop().open(file)</span><span class="s0">;</span>
+                <span class="s1">}</span><span class="s0">catch </span><span class="s1">(Exception errs)</span>
+                {
+                    System.out.println(<span class="s3">&quot; Error opening file &quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">JOptionPane.showMessageDialog(finalMenuItem</span><span class="s0">, </span><span class="s3">&quot;File Not Found!&quot;</span><span class="s0">,</span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            }
+        })<span class="s0">;</span>
+        <span class="s1">JMenu menu3 = </span><span class="s0">new </span><span class="s1">JMenu(</span><span class="s3">&quot;Window&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Maximaize &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;ALT + m&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                mainFrame.setExtendedState(mainFrame.getExtendedState() | mainFrame.MAXIMIZED_BOTH)<span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">menu3.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Minimize &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;ALT + n&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                mainFrame.setExtendedState(mainFrame.ICONIFIED)<span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">menu3.add(menuItem)</span><span class="s0">;</span>
+        <span class="s1">menuItem = </span><span class="s0">new </span><span class="s1">JMenuItem(</span><span class="s3">&quot;Exit &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">menuItem.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">exit.png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">menuItem.setAccelerator(KeyStroke.getKeyStroke(</span><span class="s3">&quot;F12&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">JMenuItem finalMenuItem2 = menuItem</span><span class="s0">;</span>
+        <span class="s1">menuItem.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                JOptionPane pane = <span class="s0">new </span><span class="s1">JOptionPane()</span><span class="s0">;</span>
+                <span class="s1">Object[] o = {</span><span class="s3">&quot;yes&quot;</span><span class="s0">, </span><span class="s3">&quot; No&quot;</span><span class="s1">}</span><span class="s0">;</span>
+                int <span class="s1">check=pane.showOptionDialog(finalMenuItem2</span><span class="s0">,</span><span class="s3">&quot;Are You Sure You Want To Exit? &quot;</span><span class="s0">, </span><span class="s3">&quot;EXIT?&quot;</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, </span><span class="s2">2</span><span class="s0">, null,</span><span class="s1">o</span><span class="s0">, </span><span class="s1">o[</span><span class="s2">1</span><span class="s1">] )</span><span class="s0">;</span>
+                if <span class="s1">(check==</span><span class="s2">0</span><span class="s1">)</span>
+                mainFrame.dispose()<span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">menu3.add(menuItem)</span><span class="s0">;</span>
+
+        <span class="s1">menuBar.add(menu1)</span><span class="s0">;</span>
+        <span class="s1">menuBar.add(menu2)</span><span class="s0">;</span>
+        <span class="s1">menuBar.add(menu3)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setJMenuBar(menuBar)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public </span><span class="s1">ImageIcon getImage(String filename) {</span>
+        <span class="s0">try </span><span class="s1">{</span>
+            <span class="s0">return new </span><span class="s1">ImageIcon(</span>
+                    <span class="s0">this</span><span class="s1">.getClass().getResource(filename))</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(Exception ex) {</span>
+            System.out.println(ex.getMessage())<span class="s0">;</span>
+            return null;
+        <span class="s1">}</span>
+    }
+
+    <span class="s0">private void </span><span class="s1">itemsGUI(){</span>
+        JPanel panel1 = <span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">panel1.setLayout(</span><span class="s0">new </span><span class="s1">GridLayout(</span><span class="s2">2</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">panel1.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">680</span><span class="s0">,</span><span class="s2">100</span><span class="s1">))</span><span class="s0">;</span>
+
+
+        <span class="s1">JPanel panel2 = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">JLabel label = </span><span class="s0">new </span><span class="s1">JLabel()</span><span class="s0">;</span>
+        <span class="s1">Font f = </span><span class="s0">new </span><span class="s1">Font(</span><span class="s3">&quot;Footlight MT Light&quot;</span><span class="s0">, </span><span class="s1">Font.BOLD</span><span class="s0">, </span><span class="s2">32</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">panel2.setBackground(Color.lightGray)</span><span class="s0">;</span>
+        <span class="s1">label.setFont(f)</span><span class="s0">;</span>
+        <span class="s1">label.setText(</span><span class="s3">&quot;                               ENGLISH DICTIONARY APPLICATION                               &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">label.setFont(label.getFont().deriveFont(</span><span class="s2">32.0f</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">panel2.add(label)</span><span class="s0">;</span>
+
+        <span class="s1">JPanel panel3 = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">panel3.setLayout(</span><span class="s0">new </span><span class="s1">GridLayout(</span><span class="s2">0</span><span class="s0">, </span><span class="s2">6</span><span class="s1">))</span><span class="s0">;</span>
+      <span class="s4">//  panel1.setLayout(new FlowLayout(FlowLayout.CENTER));</span>
+        <span class="s1">Dimension di= </span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">400</span><span class="s0">,</span><span class="s2">100</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">panel3.setPreferredSize(di)</span><span class="s0">;</span>
+        <span class="s1">panel3.setBackground(Color.LIGHT_GRAY)</span><span class="s0">;</span>
+
+
+        <span class="s1">JButton addWord = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Add word&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JButton searchALL = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Search word&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JButton searchprefix = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;*Prefix Search&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JButton searchinfix = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;*Infix* Search&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JButton searchpostfix = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Postfix* Search&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JButton list = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;List all words&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">addWord.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">add1.png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">addWord.setBorderPainted(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">addWord.setBackground(Color.cyan)</span><span class="s0">;</span>
+        <span class="s1">addWord.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                addpan.removeAll()<span class="s0">;</span>
+                <span class="s1">mainFrame.setSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">700</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">add_word_interface_GUI()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">panel3.add(addWord)</span><span class="s0">;</span>
+
+        <span class="s1">searchALL.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search1.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">searchALL.setBackground(Color.cyan)</span><span class="s0">;</span>
+        <span class="s1">searchALL.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                searchpan.removeAll()<span class="s0">;</span>
+                <span class="s1">mainFrame.setSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">700</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">search_interface_GUI()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">panel3.add(searchALL)</span><span class="s0">;</span>
+
+        <span class="s1">searchprefix.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search1.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">panel3.add(searchprefix)</span><span class="s0">;</span>
+
+        <span class="s1">searchinfix.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search1.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">panel3.add(searchinfix)</span><span class="s0">;</span>
+
+        <span class="s1">searchpostfix.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search1.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">panel3.add(searchpostfix)</span><span class="s0">;</span>
+
+        <span class="s1">list.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">list.gif&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">JScrollPane sp = </span><span class="s0">new </span><span class="s1">JScrollPane()</span><span class="s0">;</span>
+        <span class="s1">list.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                String rows = String.valueOf(wordList)<span class="s0">;</span>
+                <span class="s1">JFrame listFrme</span><span class="s0">;</span>
+                <span class="s1">listFrme = </span><span class="s0">new </span><span class="s1">JFrame(</span><span class="s3">&quot;Word List&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.getContentPane()</span><span class="s0">;</span>
+                <span class="s1">listFrme.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">200</span><span class="s0">, </span><span class="s2">400</span><span class="s1">))</span><span class="s0">;</span>
+
+
+                <span class="s1">JTextArea wordstable = </span><span class="s0">new </span><span class="s1">JTextArea (</span><span class="s3">&quot; Words Available </span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ rows)</span><span class="s0">;</span>
+                <span class="s1">JScrollPane sp = </span><span class="s0">new </span><span class="s1">JScrollPane(wordstable</span><span class="s0">, </span><span class="s1">JScrollPane.VERTICAL_SCROLLBAR_ALWAYS</span><span class="s0">, </span><span class="s1">JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+                <span class="s1">sp.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+
+                <span class="s1">listFrme.add(sp)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">listFrme.pack()</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">panel3.add(list)</span><span class="s0">;</span>
+
+        <span class="s1">panel1.add(panel2)</span><span class="s0">;</span>
+        <span class="s1">panel1.add(panel3)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.add(panel1</span><span class="s0">, </span><span class="s3">&quot;North&quot;</span><span class="s1">)</span><span class="s0">;</span>
+      <span class="s4">//  mainFrame.pack();</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">void </span><span class="s1">search_interface_GUI(){</span>
+
+        mainFrame.remove(addpan)<span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">searchpan.setBackground(Color.lightGray)</span><span class="s0">;</span>
+        <span class="s1">searchpan.setLayout(</span><span class="s0">new </span><span class="s1">GridLayout(</span><span class="s2">0</span><span class="s0">,</span><span class="s2">2</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">searchpan.setSize(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">500</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">JPanel search = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">search.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout(</span><span class="s2">1</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">JTextField entry = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s2">40</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">entry.setText(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">entry.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">15</span><span class="s0">,</span><span class="s2">45</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">entry.addFocusListener(</span><span class="s0">new </span><span class="s1">FocusAdapter() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">focusGained(FocusEvent e) {</span>
+                <span class="s0">super</span><span class="s1">.focusGained(e)</span><span class="s0">;</span>
+                <span class="s1">entry.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+        <span class="s1">JButton searchbtn = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Go &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">searchbtn.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">search2.png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">JPanel display = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">display.setLayout(</span><span class="s0">new </span><span class="s1">BorderLayout())</span><span class="s0">;</span>
+
+        <span class="s1">JPanel d1= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">d1.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout(FlowLayout.LEFT))</span><span class="s0">;</span>
+        <span class="s1">d1.setBackground(Color.LIGHT_GRAY)</span><span class="s0">;</span>
+        <span class="s1">JPanel d2= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">d2.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout(FlowLayout.LEFT))</span><span class="s0">;</span>
+        <span class="s1">d2.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;Meaning: - &quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">d2.setBackground(Color.lightGray)</span><span class="s0">;</span>
+
+        <span class="s1">JTextArea meaning = </span><span class="s0">new </span><span class="s1">JTextArea(</span><span class="s3">&quot;Meaning is shown here &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">meaning.setBackground(Color.white)</span><span class="s0">;</span>
+        <span class="s1">meaning.setColumns(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">meaning.setRows(</span><span class="s2">8</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JScrollPane sp = </span><span class="s0">new </span><span class="s1">JScrollPane(meaning</span><span class="s0">, </span><span class="s1">JScrollPane.VERTICAL_SCROLLBAR_ALWAYS</span><span class="s0">, </span><span class="s1">JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+
+        <span class="s1">JLabel pron = </span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;pronunciation :- &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">//.....AL</span>
+        <span class="s1">JLabel type = </span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;Type :- &quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">//.....AL</span>
+
+
+        <span class="s1">JTextField typeText = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s3">&quot;Type is shown here&quot;</span><span class="s0">, </span><span class="s2">15</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s1">JTextField pronText = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s3">&quot;Pronunciation is shown here&quot;</span><span class="s0">, </span><span class="s2">20</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s1">searchbtn.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                wordInfo myWord = <span class="s0">new </span><span class="s1">wordInfo()</span><span class="s0">;</span>
+                <span class="s1">wordInfo myWord1 = </span><span class="s0">new </span><span class="s1">wordInfo()</span><span class="s0">;</span>
+                <span class="s1">String check = entry.getText()</span><span class="s0">;</span>
+                if <span class="s1">(entry.getText() == </span><span class="s0">null </span><span class="s1">|| ( entry.getText().equalsIgnoreCase(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">))) {</span>
+                    JOptionPane.showMessageDialog( searchbtn<span class="s0">, </span><span class="s3">&quot;Entry empty Please enter a word!&quot;</span><span class="s0">,</span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+
+                <span class="s1">} </span><span class="s0">else </span><span class="s1">{</span>
+                    <span class="s0">try </span><span class="s1">{</span>
+                        myWord = loaderAVL.search(loaderAVL.root<span class="s0">, </span><span class="s1">(entry.getText().trim())</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span>
+
+                    <span class="s1">} </span><span class="s0">catch </span><span class="s1">(Exception err) {</span>
+                        JOptionPane.showMessageDialog( searchbtn<span class="s0">, </span><span class="s3">&quot;Word not found :-( &quot;</span><span class="s0">,</span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                        <span class="s1">entry.setText(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">typeText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">pronText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">meaning.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                    <span class="s0">try </span><span class="s1">{</span>
+                        meaning.setText(<span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">meaning.setText(</span><span class="s3">&quot;**** &quot; </span><span class="s1">+ (entry.getText().trim())+ </span><span class="s3">&quot; **** </span><span class="s0">\n </span><span class="s3">______________________________</span><span class="s0">\n</span><span class="s3">&quot; </span><span class="s1">+ String.valueOf(myWord.meaning).trim())</span><span class="s0">;</span>
+                    <span class="s1">}</span><span class="s0">catch </span><span class="s1">(Exception ex)</span>
+                    {
+                        meaning.setText(<span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        if<span class="s1">((loaderAVL.root.list.positionCount()).length &gt;</span><span class="s2">1</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">meaning.setText(</span><span class="s3">&quot;**** &quot; </span><span class="s1">+ (entry.getText().trim())+ </span><span class="s3">&quot; ****</span><span class="s0">\n </span><span class="s3">______________________________</span><span class="s0">\n</span><span class="s3">&quot;  </span><span class="s1">+ String.valueOf(loaderAVL.builder))</span><span class="s0">;</span>
+
+                    <span class="s1">}</span>
+                    loaderAVL.builder=<span class="s0">new </span><span class="s1">StringBuilder()</span><span class="s0">;</span>
+                    try <span class="s1">{</span>
+
+                        typeText.setText(String.valueOf(myWord.type).trim())<span class="s0">;</span>
+                        <span class="s1">pronText.setText(String.valueOf(myWord.pronunciation).trim())</span><span class="s0">;</span>
+                    <span class="s1">}</span><span class="s0">catch </span><span class="s1">(Exception exx)</span>
+                    {
+                        myWord1=loaderAVL.search(loaderAVL.root<span class="s0">, </span><span class="s1">entry.getText()</span><span class="s0">, false</span><span class="s1">)</span><span class="s0">;</span>
+                        if <span class="s1">(myWord1!=</span><span class="s0">null</span><span class="s1">) {</span>
+                        typeText.setText(String.valueOf(myWord1.type).trim())<span class="s0">;</span>
+                        <span class="s1">pronText.setText(String.valueOf(myWord1.pronunciation).trim())</span><span class="s0">;</span>
+                      <span class="s1">}</span>
+                      <span class="s0">else </span><span class="s1">{</span>
+                            JOptionPane.showMessageDialog(searchbtn<span class="s0">, </span><span class="s3">&quot;Word not found :-( &quot;</span><span class="s0">, </span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                            <span class="s1">entry.setText(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">typeText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">pronText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">meaning.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                    }
+                }
+            }
+        })<span class="s0">;</span>
+
+        <span class="s1">JButton delete = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Delete Word&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">delete.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">152</span><span class="s0">,</span><span class="s2">32</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">delete.setIcon(getImage(</span><span class="s3">&quot;</span><span class="s0">\\</span><span class="s3">icons</span><span class="s0">\\</span><span class="s3">Delete .png&quot;</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">delete.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+
+                <span class="s0">try </span><span class="s1">{</span>
+                    <span class="s0">if </span><span class="s1">(entry.getText().equals(</span><span class="s3">&quot;&quot;</span><span class="s1">) || entry.getText().equals(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">))</span>
+                        JOptionPane.showMessageDialog(searchbtn<span class="s0">, </span><span class="s3">&quot;Field Empty Please Enter A word &quot;</span><span class="s0">, </span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                    else<span class="s1">{</span>
+                    loaderAVL.deleteNode(loaderAVL.root<span class="s0">, </span><span class="s1">entry.getText())</span><span class="s0">;</span>
+
+<span class="s4">/* *********************** Delete From File ************************************************ */</span>
+
+                     <span class="s1">System.out.println(</span><span class="s3">&quot;lenfth &quot; </span><span class="s1">+ entry.getText().length())</span><span class="s0">;</span>
+                     <span class="s1">String str = entry.getText()</span><span class="s0">;</span>
+                     int <span class="s1">j=</span><span class="s2">0</span><span class="s0">;</span>
+                     for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s2">0</span><span class="s0">; </span><span class="s1">i &lt; wordList.length()</span><span class="s0">; </span><span class="s1">i++) {</span>
+                            <span class="s0">int </span><span class="s1">k = wordList.indexOf(str)</span><span class="s0">;</span>
+                            if <span class="s1">(k !=-</span><span class="s2">1</span><span class="s1">)</span>
+                            wordList.delete(k<span class="s0">, </span><span class="s1">k+str.length())</span><span class="s0">;</span>
+                        <span class="s1">}</span>
+                        FileOutputStream writeO = <span class="s0">null;</span>
+                        <span class="s1">ObjectOutputStream out = </span><span class="s0">null;</span>
+                        final <span class="s1">String filename = </span><span class="s3">&quot;RECYCLE_BIN.BIN&quot;</span><span class="s0">;</span>
+                        <span class="s1">fileHandler converter = </span><span class="s0">new </span><span class="s1">fileHandler()</span><span class="s0">;</span>
+                        <span class="s1">wordInfo toDelete = </span><span class="s0">new </span><span class="s1">wordInfo()</span><span class="s0">;</span>
+                        try <span class="s1">{</span>
+                            writeO = <span class="s0">new </span><span class="s1">FileOutputStream(filename</span><span class="s0">, true</span><span class="s1">)</span><span class="s0">;</span>
+                            <span class="s1">out = </span><span class="s0">new </span><span class="s1">ObjectOutputStream(writeO)</span><span class="s0">;</span>
+
+                            <span class="s1">toDelete.word=converter.convert_to_char(entry.getText().trim()</span><span class="s0">,</span><span class="s1">toDelete.word)</span><span class="s0">;</span>
+
+                            <span class="s1">out.writeObject(toDelete.word)</span><span class="s0">;</span>
+                            <span class="s1">out.flush()</span><span class="s0">;</span>
+                            <span class="s1">out.close()</span><span class="s0">;</span>
+                            <span class="s1">writeO.close()</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(FileNotFoundException edell) {</span>
+                            System.out.println(<span class="s3">&quot; FILE NOT FOUND ON WRITE&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(IOException eDel) {</span>
+                            eDel.printStackTrace()<span class="s0">;</span>
+                        <span class="s1">}</span>
+                    JOptionPane.showMessageDialog(searchbtn<span class="s0">, </span><span class="s3">&quot;Successfully deleted &quot;</span><span class="s0">, </span><span class="s3">&quot;Deleted&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.INFORMATION_MESSAGE)</span><span class="s0">;</span>
+                    <span class="s1">entry.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">meaning.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">type.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span><span class="s1">}</span>
+                }<span class="s0">catch </span><span class="s1">(Exception ee)</span>
+                {
+                    JOptionPane.showMessageDialog(searchbtn<span class="s0">, </span><span class="s3">&quot;Word not found or Already deleted &quot;</span><span class="s0">, </span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                    <span class="s1">entry.setText(</span><span class="s3">&quot;Search here&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">typeText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">pronText.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">meaning.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+                <span class="s1">}</span>
+
+            }
+        })<span class="s0">;</span>
+        <span class="s4">/* *********************** ************************************************ */</span>
+
+        <span class="s1">search.add(entry)</span><span class="s0">;</span>
+        <span class="s1">search.add(searchbtn)</span><span class="s0">;</span>
+        <span class="s1">d2.add(sp)</span><span class="s0">;</span>
+     <span class="s4">//   d2.add(meaning);</span>
+        <span class="s1">d1.add(type)</span><span class="s0">;</span>
+        <span class="s1">d1.add(typeText)</span><span class="s0">;</span>
+        <span class="s1">d1.add(pron)</span><span class="s0">;</span>
+        <span class="s1">d1.add(pronText)</span><span class="s0">;</span>
+
+        <span class="s1">JPanel forDel = </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">forDel.setBackground(Color.lightGray)</span><span class="s0">;</span>
+        <span class="s1">forDel.add(delete</span><span class="s0">, </span><span class="s1">FlowLayout.LEFT)</span><span class="s0">;</span>
+      <span class="s4">//  display.add(sp);</span>
+        <span class="s1">display.add(d1</span><span class="s0">,</span><span class="s1">BorderLayout.NORTH)</span><span class="s0">;</span>
+        <span class="s1">display.add(d2</span><span class="s0">, </span><span class="s1">BorderLayout.CENTER)</span><span class="s0">;</span>
+        <span class="s1">display.add(forDel</span><span class="s0">, </span><span class="s1">BorderLayout.EAST)</span><span class="s0">;</span>
+        <span class="s1">searchpan.add(search)</span><span class="s0">;</span>
+        <span class="s1">searchpan.add(display)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.add(searchpan</span><span class="s0">, </span><span class="s3">&quot;Center&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+
+    <span class="s0">void </span><span class="s1">add_word_interface_GUI(){</span>
+
+        mainFrame.remove(searchpan)<span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">addpan.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">1200</span><span class="s0">, </span><span class="s2">400</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">JTextField getWord = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">getWord.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">15</span><span class="s0">,</span><span class="s2">30</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">JTextField gettypee = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">gettypee.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">15</span><span class="s0">,</span><span class="s2">30</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">JTextField getpron = </span><span class="s0">new </span><span class="s1">JTextField(</span><span class="s2">30</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">getpron.setPreferredSize(</span><span class="s0">new </span><span class="s1">Dimension(</span><span class="s2">15</span><span class="s0">,</span><span class="s2">30</span><span class="s1">))</span><span class="s0">;</span>
+
+        <span class="s1">JTextArea getMeaning = </span><span class="s0">new </span><span class="s1">JTextArea()</span><span class="s0">;</span>
+        <span class="s1">getMeaning.setRows(</span><span class="s2">4</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">getMeaning.setColumns(</span><span class="s2">32</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">JScrollPane sp = </span><span class="s0">new </span><span class="s1">JScrollPane(getMeaning</span><span class="s0">, </span><span class="s1">JScrollPane.VERTICAL_SCROLLBAR_ALWAYS</span><span class="s0">, </span><span class="s1">JScrollPane.HORIZONTAL_SCROLLBAR_ALWAYS)</span><span class="s0">;</span>
+        <span class="s1">JButton addbtn = </span><span class="s0">new </span><span class="s1">JButton(</span><span class="s3">&quot;Add Word&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">addpan.setLayout(</span><span class="s0">new </span><span class="s1">GridLayout(</span><span class="s2">5</span><span class="s0">, </span><span class="s2">0</span><span class="s1">))</span><span class="s0">;</span>
+        <span class="s1">JPanel pan1</span><span class="s0">, </span><span class="s1">pan2</span><span class="s0">, </span><span class="s1">pan3</span><span class="s0">, </span><span class="s1">pan4</span><span class="s0">, </span><span class="s1">pan5</span><span class="s0">;</span>
+
+        <span class="s1">pan1= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">pan1.setSize(</span><span class="s2">1200</span><span class="s0">,</span><span class="s2">100</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">pan1.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout())</span><span class="s0">;</span>
+        <span class="s1">pan1.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;Enter word           &quot;</span><span class="s1">)</span><span class="s0">, </span><span class="s1">FlowLayout.LEFT)</span><span class="s0">;</span>
+        <span class="s1">pan1.add(getWord</span><span class="s0">, </span><span class="s1">FlowLayout.CENTER)</span><span class="s0">;</span>
+        <span class="s1">addpan.add(pan1)</span><span class="s0">;</span>
+
+        <span class="s1">pan2= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">pan2.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout())</span><span class="s0">;</span>
+        <span class="s1">pan2.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;Enter Type           &quot;</span><span class="s1">)</span><span class="s0">, </span><span class="s1">FlowLayout.LEFT)</span><span class="s0">;</span>
+        <span class="s1">pan2.add(gettypee</span><span class="s0">, </span><span class="s1">FlowLayout.CENTER)</span><span class="s0">;</span>
+        <span class="s1">addpan.add(pan2)</span><span class="s0">;</span>
+
+        <span class="s1">pan3= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">pan3.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout())</span><span class="s0">;</span>
+        <span class="s1">pan3.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;Enter Meaning           &quot;</span><span class="s1">)</span><span class="s0">, </span><span class="s1">FlowLayout.LEFT)</span><span class="s0">;</span>
+        <span class="s1">pan3.add(sp</span><span class="s0">, </span><span class="s1">FlowLayout.CENTER)</span><span class="s0">;</span>
+        <span class="s1">addpan.add(pan3)</span><span class="s0">;</span>
+
+        <span class="s1">pan4= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">pan4.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout())</span><span class="s0">;</span>
+        <span class="s1">pan4.add(</span><span class="s0">new </span><span class="s1">JLabel(</span><span class="s3">&quot;pronunciation      &quot;</span><span class="s1">)</span><span class="s0">, </span><span class="s1">FlowLayout.LEFT)</span><span class="s0">;</span>
+        <span class="s1">pan4.add(getpron</span><span class="s0">, </span><span class="s1">FlowLayout.CENTER)</span><span class="s0">;</span>
+        <span class="s1">addpan.add(pan4)</span><span class="s0">;</span>
+
+        <span class="s1">pan5= </span><span class="s0">new </span><span class="s1">JPanel()</span><span class="s0">;</span>
+        <span class="s1">pan5.setLayout(</span><span class="s0">new </span><span class="s1">FlowLayout())</span><span class="s0">;</span>
+        <span class="s1">pan5.add(addbtn)</span><span class="s0">;</span>
+        <span class="s1">addpan.add(pan5)</span><span class="s0">;</span>
+
+        <span class="s1">addbtn.addActionListener(</span><span class="s0">new </span><span class="s1">ActionListener() {</span>
+            @Override
+            <span class="s0">public void </span><span class="s1">actionPerformed(ActionEvent e) {</span>
+                String [] send = <span class="s0">new </span><span class="s1">String[</span><span class="s2">4</span><span class="s1">]</span><span class="s0">;</span>
+
+                if <span class="s1">(getWord.getText().equalsIgnoreCase(</span><span class="s3">&quot;&quot;</span><span class="s1">))</span>
+                {
+                    JOptionPane.showMessageDialog( addbtn<span class="s0">, </span><span class="s3">&quot;Field Empty&quot;</span><span class="s0">,</span><span class="s3">&quot;Error&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                    return;
+                <span class="s1">}</span>
+
+                send [<span class="s2">0</span><span class="s1">]= (getWord.getText().trim())</span><span class="s0">;</span>
+                <span class="s1">send [</span><span class="s2">1</span><span class="s1">]= (gettypee.getText().trim())</span><span class="s0">;</span>
+                <span class="s1">send [</span><span class="s2">2</span><span class="s1">]= (getpron.getText().trim())</span><span class="s0">;</span>
+                <span class="s1">send [</span><span class="s2">3</span><span class="s1">]= (getMeaning.getText().trim())</span><span class="s0">;</span>
+
+
+                <span class="s1">fileHandler file = </span><span class="s0">new </span><span class="s1">fileHandler()</span><span class="s0">;</span>
+                boolean <span class="s1">check= file.writer(send)</span><span class="s0">;</span>
+                if <span class="s1">(check)</span>
+                    JOptionPane.showMessageDialog( addbtn<span class="s0">, </span><span class="s3">&quot;Added Word Successfully!&quot;</span><span class="s0">,</span><span class="s3">&quot;Add Word&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.INFORMATION_MESSAGE)</span><span class="s0">;</span>
+                else
+                    <span class="s1">JOptionPane.showMessageDialog( addbtn</span><span class="s0">, </span><span class="s3">&quot;Adding Word Failed File Error!&quot;</span><span class="s0">,</span><span class="s3">&quot;Add Word&quot;</span><span class="s0">, </span><span class="s1">JOptionPane.ERROR_MESSAGE)</span><span class="s0">;</span>
+                int <span class="s1">seek =</span><span class="s2">570</span><span class="s0">;</span>
+
+                <span class="s1">getWord.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">gettypee.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">getpron.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">getMeaning.setText(</span><span class="s3">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">mainFrame.dispose()</span><span class="s0">;</span>
+                <span class="s1">load= </span><span class="s0">new </span><span class="s1">loader()</span><span class="s0">;</span>
+                <span class="s1">load.mainLoader(</span><span class="s0">false</span><span class="s1">)</span><span class="s0">;</span>
+
+            <span class="s1">}</span>
+        })<span class="s0">;</span>
+
+        <span class="s1">mainFrame.add(addpan)</span><span class="s0">;</span>
+        <span class="s1">mainFrame.setVisible(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+}
+
+</pre>
+</body>
+</html>

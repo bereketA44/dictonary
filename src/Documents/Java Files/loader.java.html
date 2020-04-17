@@ -1,0 +1,115 @@
+<html>
+<head>
+<title>loader.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+loader.java</font>
+</center></td></tr></table>
+<pre><span class="s0">import </span><span class="s1">java.io.*</span><span class="s0">;</span>
+
+
+public class <span class="s1">loader {</span>
+    avl_Tree loaderAVL<span class="s0">;</span>
+    <span class="s1">StringBuilder wordList</span><span class="s0">;</span>
+
+    void <span class="s1">mainLoader(</span><span class="s0">boolean </span><span class="s1">stat){</span>
+        <span class="s0">this</span><span class="s1">. loaderAVL = </span><span class="s0">new </span><span class="s1">avl_Tree()</span><span class="s0">;</span>
+        <span class="s1">fileHandler loadFile = </span><span class="s0">new </span><span class="s1">fileHandler()</span><span class="s0">;</span>
+        this<span class="s1">. wordList = </span><span class="s0">new </span><span class="s1">StringBuilder()</span><span class="s0">;</span>
+
+
+        <span class="s1">File file = </span><span class="s0">new </span><span class="s1">File(</span><span class="s2">&quot;Dictionary.abn&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        if<span class="s1">(file.exists())</span>
+        {
+            System.out.println(file.length())<span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else</span>
+        <span class="s1">{</span>
+            System.out.println(<span class="s2">&quot;error&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+
+        <span class="s0">long </span><span class="s1">fileNum = (file.length()/</span><span class="s3">630</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">System.out.println(fileNum)</span><span class="s0">;</span>
+        int <span class="s1">memoManager=</span><span class="s3">1</span><span class="s0">;</span>
+        int <span class="s1">seek =</span><span class="s3">570</span><span class="s0">;</span>
+        for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt; fileNum</span><span class="s0">; </span><span class="s1">i++) {</span>
+            wordInfo word = loadFile.reader_load(seek)<span class="s0">;</span>
+            <span class="s1">memoManager= setWordList(word)</span><span class="s0">;</span>
+            if <span class="s1">(memoManager !=</span><span class="s3">0</span><span class="s1">)</span>
+            loaderAVL.root= loaderAVL.insertNode(loaderAVL.root<span class="s0">, </span><span class="s1">String.valueOf(word.word).trim()</span><span class="s0">, </span><span class="s1">seek)</span><span class="s0">;</span>
+            <span class="s1">seek +=</span><span class="s3">630</span><span class="s0">;</span>
+
+        <span class="s1">}</span>
+
+ <span class="s4">//      loaderAVL.inorder(loaderAVL.root);</span>
+
+        <span class="s1">dictGUI run = </span><span class="s0">new </span><span class="s1">dictGUI(loaderAVL</span><span class="s0">, </span><span class="s1">wordList</span><span class="s0">, </span><span class="s1">stat)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s0">int </span><span class="s1">setWordList (wordInfo word ){</span>
+        <span class="s0">final </span><span class="s1">String filename = </span><span class="s2">&quot;RECYCLE_BIN.BIN&quot;</span><span class="s0">;</span>
+        <span class="s1">String garbage = </span><span class="s0">new </span><span class="s1">String()</span><span class="s0">;</span>
+        <span class="s1">File file = </span><span class="s0">new </span><span class="s1">File (filename)</span><span class="s0">;</span>
+        long <span class="s1">fileNum = (file.length()/</span><span class="s3">87</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">String [] check  = </span><span class="s0">new </span><span class="s1">String[(</span><span class="s0">int</span><span class="s1">) fileNum]</span><span class="s0">;</span>
+        try <span class="s1">{</span>
+            RandomAccessFile read = <span class="s0">new </span><span class="s1">RandomAccessFile(filename</span><span class="s0">, </span><span class="s2">&quot;rw&quot;</span><span class="s1">)</span><span class="s0">; </span><span class="s4">//27 //114</span>
+            <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt; fileNum</span><span class="s0">; </span><span class="s1">i++) {</span>
+                <span class="s0">int </span><span class="s1">x = </span><span class="s3">27</span><span class="s0">;</span>
+                <span class="s1">read.skipBytes(x)</span><span class="s0">;</span>
+                <span class="s1">check [i]=</span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+                for <span class="s1">(</span><span class="s0">int </span><span class="s1">j = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">j &lt; </span><span class="s3">30</span><span class="s0">; </span><span class="s1">j++) {</span>
+                    garbage = String.valueOf((<span class="s0">char</span><span class="s1">) (read.readByte()))</span><span class="s0">;</span>
+                    <span class="s1">check [i]+= String.valueOf((</span><span class="s0">char</span><span class="s1">) (read.readByte()))</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                x += <span class="s3">87</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            read.close()<span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(FileNotFoundException e) {</span>
+            System.out.println(<span class="s2">&quot;Error&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">} </span><span class="s0">catch </span><span class="s1">(IOException e) {</span>
+            System.out.println(<span class="s2">&quot;Error file&quot;</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+            <span class="s0">if </span><span class="s1">(String.valueOf(word.word).trim().equalsIgnoreCase(</span><span class="s2">&quot;&quot;</span><span class="s1">)) {</span>
+                wordList.append(<span class="s2">&quot;&quot;</span><span class="s1">)</span><span class="s0">;</span>
+                return <span class="s3">1</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s0">else </span><span class="s1">{</span>
+                <span class="s0">boolean </span><span class="s1">go = </span><span class="s0">true;</span>
+                for <span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt;fileNum </span><span class="s0">; </span><span class="s1">i++) {</span>
+                    <span class="s0">if </span><span class="s1">(String.valueOf(word.word).trim().equalsIgnoreCase(check[i].trim()))</span>
+                    {
+                        go = <span class="s0">false;</span>
+                        <span class="s1">fileNum=i</span><span class="s0">;</span>
+                        return <span class="s3">0</span><span class="s0">;</span>
+                    <span class="s1">}</span>
+                }
+                <span class="s0">if </span><span class="s1">(go) {</span>
+                    wordList.append(<span class="s2">&quot;</span><span class="s0">\n</span><span class="s2">&quot;</span><span class="s1">).append(String.valueOf(word.word).trim())</span><span class="s0">;</span>
+                    return <span class="s3">1</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            }
+            <span class="s0">return </span><span class="s3">1</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public static void </span><span class="s1">main (String [] args) {</span>
+        loader load = <span class="s0">new </span><span class="s1">loader()</span><span class="s0">;</span>
+        <span class="s1">load.mainLoader(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+}
+</pre>
+</body>
+</html>
